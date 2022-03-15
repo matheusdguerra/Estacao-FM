@@ -1,0 +1,5 @@
+.env
+.fm
+*.sqlite3
+*pyc
+__pycache__
