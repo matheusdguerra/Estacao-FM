@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from fm.core.models import Stations
 
 
 def home(request):
-    return render(request, 'index.html')
+    stations = Stations.objects.all()
+    return render(request, 'index.html', {'stations': stations})
