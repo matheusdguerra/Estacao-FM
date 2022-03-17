@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'test_without_migrations',
     'fm.core',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

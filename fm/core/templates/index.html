@@ -19,7 +19,12 @@
               <div class="card">
                 <div class="card-body">
                   
-                  {% if stations|length > 0 %}
+                  {% if filter.qs|length > 0 %}
+                  <form method="GET">
+                    {{ filter.form.as_p }}
+                    <input type="submit" />
+                  </form>
+
                     <table class="table">
                       <thead class="thead-dark">
                       <tr>
@@ -31,7 +36,7 @@
                       </thead>
         
                       <tbody>
-                      {% for station in stations %}
+                      {% for station in filter.qs %}
                         <tr>
                           <td>{{ station.entidade }}</td>
                           <td>{{ station.localidade }}</td>
@@ -43,7 +48,8 @@
                     </table>
                 {% else %}
                   <div class="text-center mt-5 mb-5 jumbotron">
-                    <h5>Nenhuma estação cadastrada ainda.</h5>
+                    <h5>Nenhuma estação localizada.</h5>
+                    <input type="button" value="Voltar" onClick="history.go(-1)"> 
                   </div>
                 {% endif %}
                 </div>
