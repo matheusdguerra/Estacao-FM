@@ -7,12 +7,13 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import sqlite3
 
 data = []
 radio = []
 
 # payload com todos os estado e municipios
-"""
+
 payload = {
     'acao': 'p',
     'PagSRD': '/SRD/RELATORIOS/RADIODIFUSAO/RELRADIOCOMPLETO.ASP',
@@ -24,11 +25,11 @@ payload = {
     'SiglaUF': 'TT',
     'CodMunicipio': 'TT',
     'radioSituacao': '0'
-    }
-"""
+}
+
 
 # payload RS Porto Alegre
-
+"""
 payload = {
     'acao': 'p',
     'PagSRD': '/SRD/RELATORIOS/RADIODIFUSAO/RELRADIOCOMPLETO.ASP',
@@ -41,7 +42,9 @@ payload = {
     'CodMunicipio': '4314902',
     'radioSituacao': '0'
 }
+"""
 
+# Coleta dados no html da Anatel
 response = requests.get('https://sistemas.anatel.gov.br/SRD/Relatorios/Radiodifusao/RelRadioCompleto.asp',
                         params=payload)
 
@@ -57,7 +60,8 @@ for table in stations_full.findAll('table', attrs={'class': 'Tabela'}):
     for line in table.findAll('tr'):
         for rows in line.findAll('td', attrs={'class': 'CampoEsquerda'}):
 
-            radio.append(rows.text)
+            radio.append(rows.text.strip('\xa0'))
+
 
 inicio = 2
 final = 25  # cada rádio tem 24 informações
@@ -69,35 +73,21 @@ for idx, c in enumerate(radio):
         data.append(radio[inicio:final])
         inicio = final
         final += 23
-# print(data)
 
-dataframe = pd.DataFrame(data, colluns=['Nome_Entidade', 'uf', 'localidade', 'frequencia'])
 
-print(dataframe)
-"""
-for lista in data:
-    if lista[1].replace(u'\xa0', u'') == '':
-        entidade = lista[0].strip()
-    else:
-        entidade = lista[1].strip()
+# cria datdaframe que será usadao para upar dados no Sqlite
+dataframe = pd.DataFrame(data, columns=['Nome_Entidade', 'Nome_Fantasia', 'CNPJ', 'N_Fistel', 'Classe', 'N_Estacao',
+                                        'End_Entidade', 'Cidade_Entidade', 'UF_Entidade', 'CEP_Entidade',
+                                        'End_Corr',	'Cidade_Corr', 'UF_Corr', 'CEP_Corr',
+                                        'End_Estacao', 'Cidade_Estacao', 'UF_Estacao', 'CEP_Estacao',
+                                        'Latitude', 'Longitude', 'Frequencia', 'Prefixo', 'Potencia']
+                         )
 
-    uf = lista[16].strip()
 
-    localidade = lista[15].strip()
+# load dados no banco Sqlite
+# cria conexão
+conn = sqlite3.connect('C:\\Users\\Matheus.Guerra.CETIL\\fm\\db.sqlite3')
+c = conn.cursor()
 
-    frequencia = lista[20].strip()
-
-    print('Entidade:', entidade)
-    print('UF:', uf)
-    print('Localidade:', localidade)
-    print('Frequencia:', frequencia)
-    print('')
-"""
-
-"""
-'Nome Entidade', 'Nome Fantasia', 'CNPJ',	'Nº Fistel',	'Classe', 'Nº Estação', 'End. Entidade', 'Cidade', 'UF'	 RS	CEP:	 90840440
-End. Corr.:	 RUA ORFANATROFIO, 711 - ALTO PETROPOLIS, .	Cidade:	 Porto Alegre	UF:	 RS	CEP:	 90840440
-End. Estação:	 RUA ORFANATROFIO
-711, .	Cidade:	 Porto Alegre	UF:	 RS	CEP:	 90000000
-Latitude:	 30S045200	Longitude:	 51W105900	Freqüência:	 98, 3 MHz	Prefixo:	 ZYD676	Potência:	 10.000 kW
-"""
+# load dados
+dataframe.to_sql('dados_anatel', conn, if_exists='append', index=False)
