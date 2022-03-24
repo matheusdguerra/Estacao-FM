@@ -4,10 +4,19 @@
 # (.fm) C:\Users\Matheus.Guerra.CETIL\fm>pip install bs4
 # beautifulsoup4-4.10.0
 
+# pip install psycopg2-binary
+# psycopg2-binary-2.9.3
+
+# pip install sqlalchemy
+# sqlalchemy-1.4.32
+
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import sqlite3
+from sqlalchemy import create_engine
+
 
 data = []
 radio = []
@@ -75,19 +84,28 @@ for idx, c in enumerate(radio):
         final += 23
 
 
-# cria datdaframe que será usadao para upar dados no Sqlite
-dataframe = pd.DataFrame(data, columns=['Nome_Entidade', 'Nome_Fantasia', 'CNPJ', 'N_Fistel', 'Classe', 'N_Estacao',
-                                        'End_Entidade', 'Cidade_Entidade', 'UF_Entidade', 'CEP_Entidade',
-                                        'End_Corr',	'Cidade_Corr', 'UF_Corr', 'CEP_Corr',
-                                        'End_Estacao', 'Cidade_Estacao', 'UF_Estacao', 'CEP_Estacao',
-                                        'Latitude', 'Longitude', 'Frequencia', 'Prefixo', 'Potencia']
+# cria dataframe que será usadao para upar dados no Sqlite
+dataframe = pd.DataFrame(data, columns=['nome_entidade', 'nome_fantasia', 'cnpj', 'n_fistel', 'classe', 'n_estacao',
+                                        'end_entidade', 'cidade_entidade', 'uf_entidade', 'cep_entidade',
+                                        'end_corr',	'cidade_corr', 'uf_corr', 'cep_corr',
+                                        'end_estacao', 'cidade_estacao', 'uf_estacao', 'cep_estacao',
+                                        'latitude', 'longitude', 'frequencia', 'prefixo', 'potencia']
                          )
 
 
-# load dados no banco Sqlite
+# load dados no banco Sqlite (localhost)
 # cria conexão
-conn = sqlite3.connect('C:\\Users\\Matheus.Guerra.CETIL\\fm\\db.sqlite3')
-c = conn.cursor()
+# conn_sqlite = sqlite3.connect('C:\\Users\\Matheus.Guerra.CETIL\\fm\\db.sqlite3')
+# c_sqlite = conn_sqlite.cursor()
 
-# load dados
-dataframe.to_sql('dados_anatel', conn, if_exists='append', index=False)
+# load dados (localhost)
+# dataframe.to_sql('dados_anatel', conn_sqlite, if_exists='append', index=False)
+
+
+# load dados no banco Postgres (Heroku)
+conn_postgres = create_engine(
+    "postgresql://otaytqsjhmziev:4f00b27fea10434aedf2e2d97fee22973c11d04f544908d0d87370347fc1af67@ec2-54-158-232-223.compute-1.amazonaws.com/d7v7732fba90i")
+c_postgres = conn_postgres.connect()
+
+# load dados (Heroku)
+dataframe.to_sql('dados_anatel', conn_postgres, if_exists='append', index=False)
