@@ -96,15 +96,33 @@ CREATE TABLE IF NOT EXISTS dados_anatel (
 -- Load etl origem dados_anatel destino model python core_stations
 INSERT INTO core_stations
 select distinct
-max(ID),
+da.id as id,
 CASE trim(da.Nome_fantasia) WHEN '' THEN trim(da.Nome_Entidade)
                                ELSE trim(da.Nome_fantasia)
-     END as entidade,
+     END as entidade
      
-trim(da.UF_Estacao) as uf,
-trim(da.Cidade_Estacao) as localidade,
-trim(da.frequencia) as frequencia
-
+,trim(da.UF_Estacao) as uf
+,trim(da.Cidade_Estacao) as localidade
+,trim(da.frequencia) as frequencia
+,trim(da.CEP_Corr) as CEP_Corr 
+,trim(da.CEP_Entidade) as CEP_Entidade  
+,trim(da.CEP_Estacao) as CEP_Estacao  
+,trim(da.CNPJ) as CNPJ 
+,trim(da.Cidade_Corr) as Cidade_Corr   
+,trim(da.Cidade_Entidade) as Cidade_Entidade 
+,trim(da.Classe) as Classe    
+,trim(da.End_Corr) as End_Corr      
+,trim(da.End_Entidade) as End_Entidade  
+,trim(da.End_Estacao) as End_Estacao
+,trim(da.Latitude) as Latitude         
+,trim(da.Longitude) as Longitude      
+,trim(da.N_Estacao) as N_Estacao       
+,trim(da.N_Fistel) as N_Fistel         
+,trim(da.Potencia) as Potencia          
+,trim(da.Prefixo) as Prefixo     
+,trim(da.UF_Corr) as UF_Corr  
+,trim(da.UF_Entidade) as UF_Entidade
+,trim(da.Nome_Entidade) as Nome_Entidade              
 from dados_anatel da
-group by da.Nome_fantasia,da.Nome_Entidade, da.UF_Estacao,da.Cidade_Estacao,da.frequencia
+where id in (select max(id) from dados_anatel group by Nome_Entidade)
 order by 1;
