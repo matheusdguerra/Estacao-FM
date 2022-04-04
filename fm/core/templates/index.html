@@ -38,7 +38,7 @@
                       <tbody>
                       {% for station in filter.qs %}
                         <tr>
-                          <td>{{ station.entidade }}</td>
+                          <td><a href="{% url 'station_detail' station.id %}">{{ station.entidade }}</a></td>
                           <td>{{ station.localidade }}</td>
                           <td>{{ station.uf }}</td>
                           <td>{{ station.frequencia }}</td>

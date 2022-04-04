@@ -20,4 +20,5 @@ from fm.core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('<int:id>/', views.station_detail, name='station_detail'),
 ]
