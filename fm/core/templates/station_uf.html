@@ -10,28 +10,15 @@
 
     <title>Estações FM!</title>
   </head>
-
   <body>
+
         <div class="container">
           <div class="row">
             <h2 class="card-title text-center">Lista de Rádios FM</h2>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <div class="card">
-
-                <table>
-                {% for itens in uf_list %}
-                  <td>
-                    <a href="{{ itens.uf }}/">{{ itens.uf }}</a>
-                  </td>
-                {% endfor %}
-                </table>
-
                 <div class="card-body">
-                  {% if filter.qs|length > 0 %}
-                  <form method="GET">
-                    {{ filter.form.as_p }}
-                    <input type="submit" />
-                  </form>
+                  
                     <table class="table">
                       <thead class="thead-dark">
                       <tr>
@@ -43,22 +30,19 @@
                       </thead>
         
                       <tbody>
-                      {% for station in filter.qs %}
+                      {% for station_uf in stations_uf %}
                         <tr>
-                          <td><a href="{{station.id}}/">{{ station.entidade }}</a></td>
-                          <td>{{ station.localidade }}</td>
-                          <td>{{ station.uf }}</td>
-                          <td>{{ station.frequencia }}</td>
+                          <td><a href="{% url 'station_detail' station_uf.id %}">{{ station_uf.entidade }}</a></td>
+                          <td>{{ station_uf.localidade }}</td>
+                          <td>{{ station_uf.uf }}</td>
+                          <td>{{ station_uf.frequencia }}</td>
                         </tr>
                       {% endfor %}
                       </tbody>
                     </table>
-                {% else %}
-                  <div class="text-center mt-5 mb-5 jumbotron">
-                    <h5>Nenhuma estação localizada.</h5>
-                    <input type="button" value="Voltar" onClick="history.go(-1)"> 
-                  </div>
-                {% endif %}
+                
+                    <a href="{% url 'home' %}">Página Inicial</a>
+
                 </div>
               </div>
             </div>

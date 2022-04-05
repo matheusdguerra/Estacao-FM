@@ -14,7 +14,7 @@
 
         <div class="container">
           <div class="row">
-            <h3 class="card-title text-center">Detalhes de {{ station.entidade }}</h3>
+            <h2 class="card-title text-center">Detalhes de {{ station.entidade }}</h2>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <div class="card">
                 <div class="card-body">
@@ -91,8 +91,7 @@
                       <div class="col">{{station.Potencia}}</div>
                     </div>
                   </div>
-                    <br>
-                    <input type="button" value="Voltar" onClick="history.go(-1)"> 
+                    <a href="{% url 'home' %}">Página Inicial</a>
                 </div>
               </div>
             </div>
