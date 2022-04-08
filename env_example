@@ -1,0 +1,3 @@
+SECRET_KEY=random_secret_key
+DEBUG=True_or_False
+ALLOWED_HOSTS=comaseparated_allowed_hosts
